@@ -59,7 +59,7 @@ public class SmartFarmFX extends Application {
         tabs.getTabs().addAll(
             tab("Vue d'ensemble", overviewPane()),
             tab("Zones", zonesPane()),
-            tab("Cultures", cropsPane()),
+            tab("Crops", cropsPane()),
             tab("Animaux", animalsPane()),
             tab("Production", productionPane()),
             tab("Capteurs", sensorsPane()),
@@ -79,7 +79,7 @@ public class SmartFarmFX extends Application {
     private HBox header() {
         Label title = new Label("🌿 Smart Farm Manager");
         title.getStyleClass().add("title");
-        Label subtitle = new Label("Gestion ferme, zones, cultures, animaux, capteurs et alertes");
+        Label subtitle = new Label("Gestion ferme, zones, crops, animaux, capteurs et alertes");
         subtitle.getStyleClass().add("subtitle");
         VBox texts = new VBox(title, subtitle);
         texts.setSpacing(4);
@@ -101,9 +101,9 @@ public class SmartFarmFX extends Application {
         TextArea requirements = new TextArea(
             "Fonctionnalités couvertes:\n" +
             "• Ajouter, modifier, désactiver et supprimer les zones.\n" +
-            "• Affecter cultures/animaux aux zones et afficher le statut global.\n" +
+            "• Affecter crops/animaux aux zones et afficher le statut global.\n" +
             "• Enregistrer la production par zone.\n" +
-            "• Gérer cultures, stades de croissance et exigences pédologiques.\n" +
+            "• Gérer crops, growth stages et exigences pédologiques.\n" +
             "• Gérer animaux, santé, événements sanitaires et alimentation par zone.\n" +
             "• Gérer capteurs, seuils, statuts, relevés, graphiques et alertes.\n" +
             "• Acquitter, supprimer et filtrer visuellement l'historique des alertes."
@@ -137,14 +137,14 @@ public class SmartFarmFX extends Application {
         ui.column(cropTable, "Zone", crop -> data.zoneNameForCrop(crop));
         ui.column(cropTable, "Plantation", crop -> crop.getPlantingDate().toString());
         ui.column(cropTable, "Récolte prévue", crop -> crop.getExpectedHarvestDate().toString());
-        ui.column(cropTable, "Stade", crop -> crop.getCurrentStage().name());
+        ui.column(cropTable, "Stage", crop -> crop.getCurrentStage().name());
         ui.column(cropTable, "Sol", crop -> crop.getSoilRequirement().toString());
 
-        Button add = ui.button("Ajouter culture", () -> editCrop(null));
+        Button add = ui.button("Ajouter crop", () -> editCrop(null));
         Button edit = ui.button("Modifier", () -> editCrop(ui.selected(cropTable)));
-        Button advance = ui.button("Avancer stade", this::advanceCropStage);
+        Button advance = ui.button("Avancer stage", this::advanceCropStage);
         Button delete = ui.dangerButton("Supprimer", this::deleteCrop);
-        return ui.page(ui.section("Cultures", cropTable, ui.actions(add, edit, advance, delete)));
+        return ui.page(ui.section("Crops", cropTable, ui.actions(add, edit, advance, delete)));
     }
 
     private VBox animalsPane() {
@@ -201,7 +201,7 @@ public class SmartFarmFX extends Application {
 
         Button add = ui.button("Ajouter capteur", () -> editSensor(null));
         Button edit = ui.button("Modifier seuil/zone", () -> editSensor(ui.selected(sensorTable)));
-        Button status = ui.button("Changer statut", this::changeSensorStatus);
+        Button status = ui.button("Changer status", this::changeSensorStatus);
         Button delete = ui.dangerButton("Supprimer", this::deleteSensor);
         return ui.page(ui.section("Capteurs", sensorTable, ui.actions(add, edit, status, delete)));
     }
@@ -267,7 +267,7 @@ public class SmartFarmFX extends Application {
 
     private void editZone(Zone zone) {
         SmartFarmForm form = new SmartFarmForm("Zone", ui);
-        ComboBox<String> type = form.combo("Type", "Culture", "Élevage", "Aquaculture");
+        ComboBox<String> type = form.combo("Type", "Crop", "Élevage", "Aquaculture");
         TextField name = form.text("Nom", zone == null ? "" : zone.getName());
         TextField north = form.text("Latitude nord", zone == null ? "35.8" : String.valueOf(zone.getBounds().getNorthLat()));
         TextField south = form.text("Latitude sud", zone == null ? "35.1" : String.valueOf(zone.getBounds().getSouthLat()));
@@ -279,7 +279,7 @@ public class SmartFarmFX extends Application {
         TextField unit = form.text("Unité", "kg");
         TextField meals = form.text("Repas/jour", "2");
 
-        if (zone instanceof CropZone) type.setValue("Culture");
+        if (zone instanceof CropZone) type.setValue("Crop");
         if (zone instanceof LivestockZone) {
             type.setValue("Élevage");
             LivestockZone livestockZone = (LivestockZone) zone;
@@ -295,7 +295,7 @@ public class SmartFarmFX extends Application {
             GeographicBounds bounds = new GeographicBounds(number(north), number(south), number(east), number(west));
             if (zone == null) {
                 Zone created;
-                if ("Culture".equals(type.getValue())) {
+                if ("Crop".equals(type.getValue())) {
                     created = new CropZone(name.getText(), bounds);
                 } else if ("Élevage".equals(type.getValue())) {
                     created = new LivestockZone(name.getText(), bounds, value(category), feeding(food, quantity, unit, meals));
@@ -314,12 +314,12 @@ public class SmartFarmFX extends Application {
     }
 
     private void editCrop(Crop crop) {
-        SmartFarmForm form = new SmartFarmForm("Culture", ui);
+        SmartFarmForm form = new SmartFarmForm("Crop", ui);
         ComboBox<CropZone> zoneBox = form.combo("Zone", context.getFarm().getCropZones());
         ComboBox<CropSpecies> species = form.combo("Espèce", CropSpecies.values());
         DatePicker planting = form.date("Plantation", crop == null ? LocalDate.now() : crop.getPlantingDate());
         DatePicker harvest = form.date("Récolte", crop == null ? LocalDate.now().plusMonths(2) : crop.getExpectedHarvestDate());
-        ComboBox<GrowthStage> stage = form.combo("Stade", GrowthStage.values());
+        ComboBox<GrowthStage> stage = form.combo("Stage", GrowthStage.values());
         TextField minPh = form.text("pH min", crop == null ? "6" : String.valueOf(crop.getSoilRequirement().getMinPH()));
         TextField maxPh = form.text("pH max", crop == null ? "7.5" : String.valueOf(crop.getSoilRequirement().getMaxPH()));
         TextField minHumidity = form.text("Humidité min", crop == null ? "40" : String.valueOf(crop.getSoilRequirement().getMinHumidity()));
@@ -534,7 +534,7 @@ public class SmartFarmFX extends Application {
         overviewLabel.setText(
             context.getFarm().getName() + "\n" +
             "Zones: " + context.getFarm().getAllZones().size() +
-            "  • Cultures: " + data.allCrops().size() +
+            "  • Crops: " + data.allCrops().size() +
             "  • Animaux: " + data.allAnimals().size() +
             "  • Capteurs: " + context.getSensors().size() +
             "  • Alertes actives: " + context.getAlertManager().getActiveAlerts().size()
@@ -585,7 +585,7 @@ public class SmartFarmFX extends Application {
     }
 
     private void toggleZone() {
-        Zone zone = ui.selected(zoneTable);
+        Zone zone = selectedOrFirst(zoneTable);
         if (zone == null) return;
         try {
             if (zone.isActive()) zone.suspend(); else zone.activate();
@@ -593,23 +593,26 @@ public class SmartFarmFX extends Application {
             ui.message("Zone déjà suspendue");
         }
         refreshAll();
+        zoneTable.refresh();
     }
 
     private void changeSensorStatus() {
-        Sensor sensor = ui.selected(sensorTable);
+        Sensor sensor = selectedOrFirst(sensorTable);
         if (sensor == null) return;
         if (sensor.getStatus() == SensorStatus.ACTIVE) sensor.suspend();
         else if (sensor.getStatus() == SensorStatus.SUSPENDED) sensor.markFaulty();
         else sensor.activate();
         refreshAll();
+        sensorTable.refresh();
     }
 
     private void advanceCropStage() {
-        Crop crop = ui.selected(cropTable);
+        Crop crop = selectedOrFirst(cropTable);
         if (crop == null) return;
         crop.advanceStage();
         context.getCropStageHistory().computeIfAbsent(crop.getId(), ignored -> new ArrayList<>()).add(new StageSnapshot(LocalDate.now(), crop.getCurrentStage()));
         refreshAll();
+        cropTable.refresh();
     }
 
     private void acknowledgeAlert() {
@@ -666,6 +669,19 @@ public class SmartFarmFX extends Application {
     private void deleteHealthEvent() {
         data.deleteHealthEvent(ui.selected(animalTable), ui.selected(healthEventTable));
         refreshAll();
+    }
+
+    private <T> T selectedOrFirst(TableView<T> table) {
+        if (table == null || table.getItems().isEmpty()) return null;
+        T selected = table.getSelectionModel().getSelectedItem();
+        if (selected != null) return selected;
+        int focusedIndex = table.getFocusModel().getFocusedIndex();
+        if (focusedIndex >= 0 && focusedIndex < table.getItems().size()) {
+            table.getSelectionModel().select(focusedIndex);
+            return table.getItems().get(focusedIndex);
+        }
+        table.getSelectionModel().selectFirst();
+        return table.getItems().get(0);
     }
 
     private void fillFeeding(FeedingProgram feeding, TextField food, TextField quantity, TextField unit, TextField meals) {
