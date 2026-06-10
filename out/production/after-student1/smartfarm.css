@@ -1,0 +1,108 @@
+.app {
+    -fx-font-family: "Segoe UI", Arial;
+    -fx-background-color: linear-gradient(to bottom right, #ecfdf5, #f7fee7);
+}
+
+.hero {
+    -fx-padding: 24 30;
+    -fx-background-color: linear-gradient(to right, #064e3b, #16a34a);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.22), 18, 0, 0, 4);
+}
+
+.title {
+    -fx-font-size: 30px;
+    -fx-font-weight: 800;
+    -fx-text-fill: white;
+}
+
+.subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #dcfce7;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #dcfce7;
+}
+
+.tab {
+    -fx-background-color: #bbf7d0;
+    -fx-padding: 9 14;
+    -fx-focus-color: transparent;
+}
+
+.tab:selected {
+    -fx-background-color: white;
+}
+
+.tab .tab-label {
+    -fx-text-fill: #065f46;
+    -fx-font-weight: 700;
+}
+
+.card, .panel {
+    -fx-background-color: rgba(255,255,255,.92);
+    -fx-background-radius: 22;
+    -fx-padding: 18;
+    -fx-effect: dropshadow(gaussian, rgba(6,95,70,.16), 24, 0, 0, 8);
+}
+
+.section-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #065f46;
+}
+
+.metric {
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #064e3b;
+    -fx-padding: 22;
+    -fx-background-color: white;
+    -fx-background-radius: 22;
+    -fx-effect: dropshadow(gaussian, rgba(6,95,70,.14), 18, 0, 0, 6);
+}
+
+.button {
+    -fx-background-radius: 999;
+    -fx-padding: 9 16;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+}
+
+.primary {
+    -fx-background-color: #16a34a;
+    -fx-text-fill: white;
+}
+
+.danger {
+    -fx-background-color: #dc2626;
+    -fx-text-fill: white;
+}
+
+.combo-box, .text-field, .date-picker {
+    -fx-background-radius: 12;
+    -fx-border-color: #86efac;
+    -fx-border-radius: 12;
+    -fx-background-color: white;
+}
+
+.table-view {
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: #bbf7d0;
+    -fx-background-color: white;
+}
+
+.column-header-background {
+    -fx-background-color: #dcfce7;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #86efac;
+}
+
+.chart-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-padding: 12;
+}
